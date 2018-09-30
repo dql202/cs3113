@@ -15,7 +15,7 @@
 #define RESOURCE_FOLDER "NYUCodebase.app/Contents/Resources/"
 #endif
 
-//setup-declare objects
+//setup-declare objects out of main
 SDL_Window* displayWindow;
 ShaderProgram program;
 
@@ -38,7 +38,6 @@ int main(int argc, char *argv[])
 #endif
     
     glViewport(0, 0, 640, 360);
-    //glClearColor(0.4f, 0.2f, 0.4f, 1.0f);
     glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
     
     //initialize objects out of loop
@@ -48,6 +47,7 @@ int main(int argc, char *argv[])
     GLuint starTexture = LoadTexture(RESOURCE_FOLDER "dstar.png");
     GLuint headTexture=LoadTexture(RESOURCE_FOLDER "c3.png");
     
+    //Ortho Options
     //projectionMatrix = glm::ortho(-1.777f, 1.777f, -1.0f, 1.0f, -1.0f, 1.0f);
     //projectionMatrix = glm::ortho(-3.554f, 3.554f, -2.0f, 2.0f, -1.0f, 1.0f);
     projectionMatrix = glm::ortho(-5.333f, 5.333f, -3.0f, 3.0f, -1.0f, 1.0f);
@@ -69,35 +69,15 @@ int main(int argc, char *argv[])
         glClear(GL_COLOR_BUFFER_BIT);
         program.SetColor(0.2f, 0.8f, 0.4f, 1.0f);
 
-        //inloop operations
-//        modelMatrix=glm::mat4(1.0f);
-//        program.SetModelMatrix(modelMatrix);
-//        program.SetProjectionMatrix(projectionMatrix);
-//        program.SetViewMatrix(viewMatrix);
-//
-//        float vertices[] = {0.5f, -0.5f, 0.0f, 0.5f, -0.5f, -0.5f};
-//        glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
-//        glEnableVertexAttribArray(program.positionAttribute);
-//        glDrawArrays(GL_TRIANGLES, 0, 3);
-//
-//        //example rotation
-//        modelMatrix = glm::mat4(1.0f);
-//        modelMatrix = glm::translate(modelMatrix, glm::vec3(-1.0f,0.0f,0.0f));
-//        float angle = 45.0f * (3.1415926f / 180.0f);
-//        modelMatrix = glm::rotate(modelMatrix, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-//        program.SetModelMatrix(modelMatrix);
-//
-//        glDrawArrays(GL_TRIANGLES, 0, 3);
-//        glDisableVertexAttribArray(program.positionAttribute);
-//        SDL_GL_SwapWindow(displayWindow);
-        
-        
         
         //timer
         float ticks = (float)SDL_GetTicks()/1000.0f;
         float elapsed = ticks - lastFrameTicks;
         lastFrameTicks = ticks;
-
+        
+        //in-loop operations
+        
+        //Moving Falcon
         program.SetModelMatrix(modelMatrix);
         program.SetProjectionMatrix(projectionMatrix);
         program.SetViewMatrix(viewMatrix);
@@ -108,10 +88,9 @@ int main(int argc, char *argv[])
         float texCoords[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
         glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
         glEnableVertexAttribArray(program.texCoordAttribute);
-        //rotation
+        //translation and animated rotation
         modelMatrix = glm::mat4(1.0f);
         modelMatrix = glm::translate(modelMatrix, glm::vec3(1.5f,0.0f,0.0f));
-        program.SetModelMatrix(modelMatrix);
         angle += elapsed;
         modelMatrix = glm::rotate(modelMatrix, angle, glm::vec3(0.0f, 0.0f, 1.0f));
         modelMatrix = glm::translate(modelMatrix, glm::vec3(2.0f,1.0f,0.0f));
@@ -122,9 +101,6 @@ int main(int argc, char *argv[])
 
         
         //Death Star
-        //program.SetModelMatrix(modelMatrix);
-        //program.SetProjectionMatrix(projectionMatrix);
-        //program.SetViewMatrix(viewMatrix);
         glBindTexture(GL_TEXTURE_2D, starTexture);
         float vertices2[] = {-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5};
         glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices2);
@@ -132,20 +108,16 @@ int main(int argc, char *argv[])
         float texCoords2[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
         glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords2);
         glEnableVertexAttribArray(program.texCoordAttribute);
-        //translation
+        //translation and scale
         modelMatrix = glm::mat4(1.0f);
         modelMatrix = glm::translate(modelMatrix, glm::vec3(1.2f,0.0f,0.0f));
         modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f, 2.0f, 1.0f));
-        
         program.SetModelMatrix(modelMatrix);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glDisableVertexAttribArray(program.positionAttribute);
         glDisableVertexAttribArray(program.texCoordAttribute);
         
         //C3PO Head
-//        program.SetModelMatrix(modelMatrix);
-//        program.SetProjectionMatrix(projectionMatrix);
-//        program.SetViewMatrix(viewMatrix);
         glBindTexture(GL_TEXTURE_2D, headTexture);
         float vertices3[] = {-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5};
         glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices3);
@@ -155,9 +127,8 @@ int main(int argc, char *argv[])
         glEnableVertexAttribArray(program.texCoordAttribute);
         //translation
         modelMatrix = glm::mat4(1.0f);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(-3.0f,-1.9f,0.0f));
-        //modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f, 2.0f, 1.0f));
-        
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(-3.0f,0.0f,0.0f));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f, 2.0f, 1.0f));
         program.SetModelMatrix(modelMatrix);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glDisableVertexAttribArray(program.positionAttribute);
