@@ -18,6 +18,7 @@
 //setup-declare objects out of main
 SDL_Window* displayWindow;
 ShaderProgram program;
+ShaderProgram uprogram;
 
 glm::mat4 projectionMatrix = glm::mat4(1.0f);
 glm::mat4 modelMatrix = glm::mat4(1.0f);
@@ -43,6 +44,7 @@ int main(int argc, char *argv[])
     //initialize objects out of loop
     
     program.Load(RESOURCE_FOLDER "vertex_textured.glsl", RESOURCE_FOLDER "fragment_textured.glsl" ) ;
+    uprogram.Load(RESOURCE_FOLDER "vertex.glsl", RESOURCE_FOLDER "fragment.glsl" ) ;
     GLuint shipTexture = LoadTexture(RESOURCE_FOLDER "falcon.png");
     GLuint starTexture = LoadTexture(RESOURCE_FOLDER "dstar.png");
     GLuint headTexture=LoadTexture(RESOURCE_FOLDER "c3.png");
@@ -52,6 +54,7 @@ int main(int argc, char *argv[])
     //projectionMatrix = glm::ortho(-3.554f, 3.554f, -2.0f, 2.0f, -1.0f, 1.0f);
     projectionMatrix = glm::ortho(-5.333f, 5.333f, -3.0f, 3.0f, -1.0f, 1.0f);
     glUseProgram(program.programID);
+    glUseProgram(uprogram.programID);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     float lastFrameTicks = 0.0f;
@@ -67,7 +70,7 @@ int main(int argc, char *argv[])
         }
         //inloop setup
         glClear(GL_COLOR_BUFFER_BIT);
-        program.SetColor(0.2f, 0.8f, 0.4f, 1.0f);
+        uprogram.SetColor(0.0f, 0.0f, 0.8f, 1.0f);
 
         
         //timer
@@ -116,6 +119,41 @@ int main(int argc, char *argv[])
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glDisableVertexAttribArray(program.positionAttribute);
         glDisableVertexAttribArray(program.texCoordAttribute);
+        
+        
+        //Untextured Square 1
+        modelMatrix=glm::mat4(1.0f);
+        uprogram.SetModelMatrix(modelMatrix);
+        uprogram.SetProjectionMatrix(projectionMatrix);
+        uprogram.SetViewMatrix(viewMatrix);
+        float vertices4[] = {-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5};
+        glVertexAttribPointer(uprogram.positionAttribute, 2, GL_FLOAT, false, 0, vertices4);
+        glEnableVertexAttribArray(uprogram.positionAttribute);
+        //translation
+        modelMatrix = glm::mat4(1.0f);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(-3.0f,0.0f,0.0f));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f, 2.0f, 1.0f));
+        uprogram.SetModelMatrix(modelMatrix);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisableVertexAttribArray(uprogram.positionAttribute);
+        
+        //Change Color
+        uprogram.SetColor(0.8f, 0.0f, 0.0f, 1.0f);
+        //Untextured Square 2
+        modelMatrix=glm::mat4(1.0f);
+        uprogram.SetModelMatrix(modelMatrix);
+        uprogram.SetProjectionMatrix(projectionMatrix);
+        uprogram.SetViewMatrix(viewMatrix);
+        float vertices5[] = {-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5};
+        glVertexAttribPointer(uprogram.positionAttribute, 2, GL_FLOAT, false, 0, vertices5);
+        glEnableVertexAttribArray(uprogram.positionAttribute);
+        //translation
+        modelMatrix = glm::mat4(1.0f);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(-3.0f,0.0f,0.0f));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(1.8f, 1.8f, 1.0f));
+        uprogram.SetModelMatrix(modelMatrix);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisableVertexAttribArray(uprogram.positionAttribute);
         
         //C3PO Head
         glBindTexture(GL_TEXTURE_2D, headTexture);
