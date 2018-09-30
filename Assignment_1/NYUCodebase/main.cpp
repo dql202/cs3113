@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
         glDisableVertexAttribArray(program.positionAttribute);
         glDisableVertexAttribArray(program.texCoordAttribute);
         
-        
+        //Untextured Program
         //Untextured Square 1
         modelMatrix=glm::mat4(1.0f);
         uprogram.SetModelMatrix(modelMatrix);
