@@ -29,20 +29,27 @@ void setup();
 //entities
 class Player{
 public:
-    float up,down,left,right;
-    Player(float u,float d,float l,float r):up(u),down(d),left(l),right(r){}
-    Player(float pos){
+    float up,down,left,right,pos;
+    Player(float u,float d,float l,float r,float pos):up(u),down(d),left(l),right(r){}
+    Player(float p){
+        pos=p;
         up=0.2f;
         down=-0.2f;
         left=-0.05+pos;
         right=0.05f+pos;
     }
-    
+    void replace(){
+        up=0.2f;
+        down=-0.2f;
+        left=-0.05+pos;
+        right=0.05f+pos;
+    }
 };
 
+//ball class with dimensions, x and y velocities, and x and y directions
 class Ball{
 public:
-    float up,down,left,right,xv,yv;
+    float up,down,left,right,xv,yv,xd,yd;
     Ball(){
         up=0.04f;
         down=-0.04f;
@@ -50,12 +57,14 @@ public:
         right=0.04f;
         xv=0.0006;
         yv=0.0006;
+        xd=1;
+        yd=1;
     }
-    void move(){
-        up+=yv;
-        down+=yv;
-        left+=xv;
-        right+=xv;
+    void move(float factor =1.0){
+        up+=yv*yd*factor;
+        down+=yv*yd*factor;
+        left+=xv*xd*factor;
+        right+=xv*xd*factor;
         
     }
     void replace(){
@@ -72,7 +81,7 @@ int main(int argc, char *argv[])
 {
     setup();
     float lastFrameTicks = 0.0f;
-    //float angle = 45.0f * (3.1415926f / 180.0f);
+
     Player left=Player(-1.5);
     Player right=Player(1.5);
     Ball ball=Ball();
@@ -90,19 +99,19 @@ int main(int argc, char *argv[])
             if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
                 done = true;
             } else if(event.type == SDL_KEYDOWN) {
-                if(event.key.keysym.scancode == SDL_SCANCODE_UP) {
+                if(event.key.keysym.scancode == SDL_SCANCODE_UP &&right.up<1) {
                     right.up+=move;
                     right.down+=move;
                 }
-                else if (event.key.keysym.scancode==SDL_SCANCODE_DOWN){
+                else if (event.key.keysym.scancode==SDL_SCANCODE_DOWN && right.down>-1){
                     right.up-=move;
                     right.down-=move;
                 }
-                else if (event.key.keysym.scancode==SDL_SCANCODE_W){
+                else if (event.key.keysym.scancode==SDL_SCANCODE_W && left.up<1){
                     left.up+=move;
                     left.down+=move;
                 }
-                else if (event.key.keysym.scancode==SDL_SCANCODE_S){
+                else if (event.key.keysym.scancode==SDL_SCANCODE_S && left.down>-1){
                     left.up-=move;
                     left.down-=move;
                 }
@@ -148,26 +157,32 @@ int main(int argc, char *argv[])
         
         //paddle reflects and increases speed by .05
         if (ball.right>=right.left&&ball.up>=right.down&&ball.down<=right.up){
-            ball.xv*=-1.05;
+            ball.xd*=-1;
+            ball.xv*=1.05;
         }
         else if (ball.left<=left.right&&ball.up>=left.down&&ball.down<=left.up){
-            ball.xv*=-1.05;
+            ball.xd*=-1;
+            ball.xv*=1.05;
         }
         //win conditions
         else if (ball.right>=1.77f){
             printf("Player 1 wins\n");
             ball.replace();
+            left.replace();
+            right.replace();
         }
         else if (ball.left<=-1.77f){
             printf("Player 2 wins\n");
             ball.replace();
+            left.replace();
+            right.replace();
             
         }
         //if ball hits top or bottom of screen
         else if (ball.up>=1){
             ball.yv*=-1;
         }
-        else if (ball.up<=-1){
+        else if (ball.up<-1){
             ball.yv*=-1;
         }
 
