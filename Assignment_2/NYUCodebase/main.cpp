@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     Player left=Player(-1.5);
     Player right=Player(1.5);
     Ball ball=Ball();
-    float move=0.2f;
+    
     
     SDL_Event event;
     bool done = false;
@@ -93,8 +93,8 @@ int main(int argc, char *argv[])
         float ticks = (float)SDL_GetTicks()/1000.0f;
         float elapsed = ticks - lastFrameTicks;
         lastFrameTicks = ticks;
-        ball.move();
-        
+        ball.move(elapsed*1000);
+        float move=0.2f;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
                 done = true;
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
         }
         //inloop setup
         glClear(GL_COLOR_BUFFER_BIT);
-        program.SetColor(0.2f, 0.8f, 0.4f, 1.0f);
+        program.SetColor(0.5f, 0.4f, 0.0f, 1.0f);
         
         //inloop operations
         
@@ -189,54 +189,29 @@ int main(int argc, char *argv[])
         
         
         
-        
-//        glClear(GL_COLOR_BUFFER_BIT);
-
-
-//        program.SetModelMatrix(modelMatrix);
-//        program.SetProjectionMatrix(projectionMatrix);
-//        program.SetViewMatrix(viewMatrix);
-//        glBindTexture(GL_TEXTURE_2D, emojiTexture);
-//        float vertices[] = {-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5};
-//        glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
-//        glEnableVertexAttribArray(program.positionAttribute);
-//        float texCoords[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
-//        glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
-//        glEnableVertexAttribArray(program.texCoordAttribute);
-//        //example rotation
-//        modelMatrix = glm::mat4(1.0f);
-//        modelMatrix = glm::translate(modelMatrix, glm::vec3(-1.0f,0.0f,0.0f));
-//
-//        angle += elapsed;
-//        modelMatrix = glm::rotate(modelMatrix, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-//        program.SetModelMatrix(modelMatrix);
-//        glDrawArrays(GL_TRIANGLES, 0, 6);
-//        glDisableVertexAttribArray(program.positionAttribute);
-//        glDisableVertexAttribArray(program.texCoordAttribute);
-//        SDL_GL_SwapWindow(displayWindow);
 
     }
     
     SDL_Quit();
     return 0;
 }
-
-GLuint LoadTexture(const char *filePath) {
-    int w,h,comp;
-    unsigned char* image = stbi_load(filePath, &w, &h, &comp, STBI_rgb_alpha);
-    if(image == NULL) {
-        std::cout << "Unable to load image. Make sure the path is correct\n";
-        assert(false);
-    }
-    GLuint retTexture;
-    glGenTextures(1, &retTexture);
-    glBindTexture(GL_TEXTURE_2D, retTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    stbi_image_free(image);
-    return retTexture;
-}
+//
+//GLuint LoadTexture(const char *filePath) {
+//    int w,h,comp;
+//    unsigned char* image = stbi_load(filePath, &w, &h, &comp, STBI_rgb_alpha);
+//    if(image == NULL) {
+//        std::cout << "Unable to load image. Make sure the path is correct\n";
+//        assert(false);
+//    }
+//    GLuint retTexture;
+//    glGenTextures(1, &retTexture);
+//    glBindTexture(GL_TEXTURE_2D, retTexture);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    stbi_image_free(image);
+//    return retTexture;
+//}
 
 void setup(){
     SDL_Init(SDL_INIT_VIDEO);
@@ -249,7 +224,7 @@ void setup(){
 #endif
     
     glViewport(0, 0, 640, 360);
-    glClearColor(0.4f, 0.2f, 0.4f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
     
     //initialize objects out of loop
     program.Load(RESOURCE_FOLDER "vertex.glsl", RESOURCE_FOLDER "fragment.glsl" ) ;
