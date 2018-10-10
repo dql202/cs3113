@@ -35,13 +35,13 @@ public:
         pos=p;
         up=0.2f;
         down=-0.2f;
-        left=-0.05+pos;
+        left=0.02+pos;
         right=0.05f+pos;
     }
     void replace(){
         up=0.2f;
         down=-0.2f;
-        left=-0.05+pos;
+        left=0.02+pos;
         right=0.05f+pos;
     }
 };
@@ -93,8 +93,8 @@ int main(int argc, char *argv[])
         float ticks = (float)SDL_GetTicks()/1000.0f;
         float elapsed = ticks - lastFrameTicks;
         lastFrameTicks = ticks;
-        ball.move(elapsed*1000);
-        float move=0.2f;
+        ball.move(elapsed*1000.0f);
+        float move=0.2f+elapsed;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
                 done = true;
@@ -155,14 +155,14 @@ int main(int argc, char *argv[])
         glDisableVertexAttribArray(program.positionAttribute);
         SDL_GL_SwapWindow(displayWindow);
         
-        //paddle reflects and increases speed by .05
+        //paddle reflects and increases speed by .01
         if (ball.right>=right.left&&ball.up>=right.down&&ball.down<=right.up){
             ball.xd*=-1;
-            ball.xv*=1.05;
+            ball.xv*=1.01;
         }
         else if (ball.left<=left.right&&ball.up>=left.down&&ball.down<=left.up){
             ball.xd*=-1;
-            ball.xv*=1.05;
+            ball.xv*=1.01;
         }
         //win conditions
         else if (ball.right>=1.77f){
@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
         else if (ball.up>=1){
             ball.yv*=-1;
         }
-        else if (ball.up<-1){
+        else if (ball.up<-.95){
             ball.yv*=-1;
         }
 
