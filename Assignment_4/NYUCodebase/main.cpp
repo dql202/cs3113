@@ -223,26 +223,12 @@ void checkCollision(GameState &state){
     }
     
     for (Entity i:state.platforms){
-//        if (i.alive){
-//            if (state.player.position[0]+0.5f>i.position[0]-0.5f&&state.player.position[1]-0.5f<=i.position[1]+0.5f){
-//
-//                state.moveRight=false;
-//            }
-//            if (state.player.position[0]-0.5f<i.position[0]+0.5f&&state.player.position[1]-0.5f<=i.position[1]+0.5f){
-//
-//                state.moveLeft=false;
-//            }
-//            if (state.player.position[1]-0.5f<i.position[1]+0.5f&&state.player.position[0]-0.5f<i.position[0]+0.5f&&state.player.position[0]+0.5f>i.position[0]-0.5f){
-//                //state.player.position[1]+=0.01f;
-//                state.grounded=true;
-//            }
-//        }
         if (i.alive){
-            if (state.player.position[0]+0.5f>i.position[0]-0.5f&&state.player.position[1]-0.3f<=i.position[1]+0.5f){
+            if (state.player.position[0]+0.5f>i.position[0]-0.5f&&state.player.position[1]-0.5f<=i.position[1]+0.1f){
 
                 state.moveRight=false;
             }
-            if (state.player.position[0]-0.5f<i.position[0]+0.5f&&state.player.position[1]-0.3f<=i.position[1]+0.5f){
+            if (state.player.position[0]-0.5f<i.position[0]+0.5f&&state.player.position[1]-0.5f<=i.position[1]+0.1f){
 
                 state.moveLeft=false;
             }
@@ -264,21 +250,21 @@ void UpdateGame(GameState &state, float elapsed) {
     state.player.xvel=0.0f;
     state.player.yvel=0.0f;
     if (state.moveLeft){
-        state.player.xvel=-2.4f;
+        state.player.xvel=-3.4f;
         //state.player.velocity+=glm::vec3(-2.4f,0,0);
 
         
     }
     else if (state.moveRight){
-        state.player.xvel=2.4f;
+        state.player.xvel=3.4f;
         //state.player.velocity+=glm::vec3(2.4f,0,0);
         
     }
     if (state.jump){
-        state.player.yvel=10.0f;
+        state.player.yvel=5.0f;
         //state.player.velocity+=glm::vec3(0,5,0);
     }
-    state.player.xvel = lerp(state.player.xvel, 0.0f, elapsed * 10.0f);
+    state.player.xvel = lerp(state.player.xvel, 0.0f, elapsed * 5.0f);
     state.player.velocity=glm::vec3(state.player.xvel,state.player.yvel,0);
     if (!state.grounded){
         glm::vec3 gravity= glm::vec3(0.0f,-100.0f,0.0f);
