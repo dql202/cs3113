@@ -218,21 +218,64 @@ void RenderGame(GameState &state) {
     
 }
 void checkCollision(GameState &state){
-    if (state.player.position[1]-0.5f<state.gameOver.position[1]+0.5f&&state.player.position[0]-0.5f<state.gameOver.position[0]+0.5f&&state.player.position[0]+0.5f>state.gameOver.position[0]-0.5f){
+    float gxcol=fabs(state.player.position[0]-state.gameOver.position[0])-1;
+    float gycol=fabs(state.player.position[1]-state.gameOver.position[1])-1;
+    if (gxcol<0&&gycol<0){
         mode=STATE_GAME_OVER;
     }
     
     for (Entity i:state.platforms){
         if (i.alive){
-            if (state.player.position[0]+0.5f>i.position[0]-0.5f&&state.player.position[1]-0.5f<=i.position[1]+0.1f){
-
-                state.moveRight=false;
+            float xcol=fabs(state.player.position[0]-i.position[0])-1;
+            float ycol=fabs(state.player.position[1]-i.position[1])-1;
+            if (xcol<0&&ycol<0&&state.player.position[0]+0.5f>i.position[0]-0.5f&&state.player.position[1]-0.5f>=i.position[1]+0.5f){
+                state.player.position[0]-=fabs(state.player.position[0]-i.position[0]-1);
             }
-            if (state.player.position[0]-0.5f<i.position[0]+0.5f&&state.player.position[1]-0.5f<=i.position[1]+0.1f){
+            if (xcol<0&&ycol<0&&state.player.position[0]-0.5f<i.position[0]+0.5f&&state.player.position[1]-0.5f>=i.position[1]+0.5f){
 
-                state.moveLeft=false;
+                state.player.position[0]+=fabs(state.player.position[0]-i.position[0]-1);
             }
-            if (state.player.position[1]-0.5f<i.position[1]+0.5f&&state.player.position[0]-0.5f<i.position[0]+0.5f&&state.player.position[0]+0.5f>i.position[0]-0.5f){
+            if (ycol<0&&xcol<0){
+                //state.player.position[1]+=0.01f;
+                state.grounded=true;
+            }
+        }
+        
+    }
+}
+void collisionX(GameState &state){
+    for (Entity i:state.platforms){
+        if (i.alive){
+            float xcol=fabs(state.player.position[0]-i.position[0])-1;
+            float ycol=fabs(state.player.position[1]-i.position[1])-1;
+            if (xcol<0&&ycol<0&&state.player.position[0]+0.5f>i.position[0]-0.5f&&state.player.position[1]-0.5f>=i.position[1]+0.5f){
+                state.player.position[0]-=fabs(state.player.position[0]-i.position[0]-1);
+            }
+            if (xcol<0&&ycol<0&&state.player.position[0]-0.5f<i.position[0]+0.5f&&state.player.position[1]-0.5f>=i.position[1]+0.5f){
+                
+                state.player.position[0]+=fabs(state.player.position[0]-i.position[0]-1);
+            }
+            if (ycol<0&&xcol<0){
+                //state.player.position[1]+=0.01f;
+                state.grounded=true;
+            }
+        }
+        
+    }
+}
+void collisionY(GameState &state){
+    for (Entity i:state.platforms){
+        if (i.alive){
+            float xcol=fabs(state.player.position[0]-i.position[0])-1;
+            float ycol=fabs(state.player.position[1]-i.position[1])-1;
+            if (xcol<0&&ycol<0&&state.player.position[0]+0.5f>i.position[0]-0.5f&&state.player.position[1]-0.5f>=i.position[1]+0.5f){
+                state.player.position[0]-=5+fabs(state.player.position[0]-i.position[0]-1);
+            }
+            if (xcol<0&&ycol<0&&state.player.position[0]-0.5f<i.position[0]+0.5f&&state.player.position[1]-0.5f>=i.position[1]+0.5f){
+                
+                state.player.position[0]+=fabs(state.player.position[0]-i.position[0]-1);
+            }
+            if (ycol<0&&xcol<0){
                 //state.player.position[1]+=0.01f;
                 state.grounded=true;
             }
@@ -261,13 +304,14 @@ void UpdateGame(GameState &state, float elapsed) {
         
     }
     if (state.jump){
-        state.player.yvel=5.0f;
+        state.player.yvel=20.0f;
         //state.player.velocity+=glm::vec3(0,5,0);
     }
+    checkCollision(state);
     state.player.xvel = lerp(state.player.xvel, 0.0f, elapsed * 5.0f);
     state.player.velocity=glm::vec3(state.player.xvel,state.player.yvel,0);
     if (!state.grounded){
-        glm::vec3 gravity= glm::vec3(0.0f,-100.0f,0.0f);
+        glm::vec3 gravity= glm::vec3(0.0f,-400.0f,0.0f);
         state.player.velocity+=gravity*elapsed;
     }
     state.player.position+=state.player.velocity*elapsed;
